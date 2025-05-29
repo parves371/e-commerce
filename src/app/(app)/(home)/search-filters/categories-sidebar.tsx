@@ -1,30 +1,33 @@
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { CoustomCategory } from "../types";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 interface props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: CoustomCategory[]; //TODO: removed latter
 }
 
-const CategoriesSidebar = ({ open, onOpenChange, data }: props) => {
+const CategoriesSidebar = ({ open, onOpenChange }: props) => {
+  const trpc = useTRPC();
+  const { data } = useQuery(trpc.categories.getMany.queryOptions());
+
   const router = useRouter();
-  const [parentCategory, setParentCategory] = useState<
-    CoustomCategory[] | null
-  >(null);
+  const [parentCategory, setParentCategory] =
+    useState<CategoriesGetManyOutput | null>(null);
   const [selectedCategory, setSelectedCategory] =
-    useState<CoustomCategory | null>(null);
+    useState<CategoriesGetManyOutput[1] | null>(null);
 
   // id we have parent category we will show it in the sidebar, otherwisw show root category
   const currentCategory = parentCategory ?? data ?? [];
@@ -34,9 +37,9 @@ const CategoriesSidebar = ({ open, onOpenChange, data }: props) => {
     onOpenChange(opne);
   };
 
-  const handleCategoryClick = (category: CoustomCategory) => {
+  const handleCategoryClick = (category: CategoriesGetManyOutput[1]) => {
     if (category.subcategories && category.subcategories.length > 0) {
-      setParentCategory(category.subcategories as CoustomCategory[]);
+      setParentCategory(category.subcategories as CategoriesGetManyOutput);
       setSelectedCategory(category);
     } else {
       // this is a leaf category (no subcategories)
