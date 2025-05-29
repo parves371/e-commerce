@@ -3,13 +3,13 @@ import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CoustomCategory } from "../types";
+import { CategoriesGetManyOutputSingle } from "@/modules/categories/types";
+import Link from "next/link";
 import { SubCatroryMenu } from "./subcategory-menu";
 import { useDropdownPosition } from "./use-dropdown-position";
-import Link from "next/link";
 
 interface Props {
-  category: CoustomCategory;
+  category: CategoriesGetManyOutputSingle;
   isActive?: boolean;
   isNavigationHoverd?: boolean;
 }
