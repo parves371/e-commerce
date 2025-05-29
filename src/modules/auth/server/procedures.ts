@@ -1,8 +1,8 @@
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { headers as GetHeaders, cookies as getCookies } from "next/headers";
-import { AUTH_COOKIE } from "../constants";
+import { headers as GetHeaders } from "next/headers";
 import { loginSchema, registerSchema } from "../schemas";
+import { generateAuthCookie } from "../utils";
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
     const headers = await GetHeaders();
@@ -52,22 +52,12 @@ export const authRouter = createTRPCRouter({
           message: "failed to login",
         });
       }
-      const cookies = await getCookies();
-      cookies.set("token", data.token, {
-        name: AUTH_COOKIE,
+
+      await generateAuthCookie({
+        prefix: ctx.db.config.cookiePrefix,
         value: data.token,
-        httpOnly: true,
-        path: "/",
-        // sameSite: "none",
-        // domain: process.env.NEXT_PUBLIC_APP_URL
-        // TODO: ensure cross-domain cookie sharing
       });
     }),
-
-  logout: baseProcedure.mutation(async ({}) => {
-    const cookies = await getCookies();
-    cookies.delete(AUTH_COOKIE);
-  }),
 
   login: baseProcedure.input(loginSchema).mutation(async ({ ctx, input }) => {
     const data = await ctx.db.login({
@@ -84,15 +74,10 @@ export const authRouter = createTRPCRouter({
         message: "failed to login",
       });
     }
-    const cookies = await getCookies();
-    cookies.set("token", data.token, {
-      name: AUTH_COOKIE,
+
+    await generateAuthCookie({
+      prefix: ctx.db.config.cookiePrefix,
       value: data.token,
-      httpOnly: true,
-      path: "/",
-      // sameSite: "none",
-      // domain: process.env.NEXT_PUBLIC_APP_URL
-      // TODO: ensure cross-domain cookie sharing
     });
 
     return data;

@@ -18,7 +18,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { loginSchema } from "../../schemas";
@@ -29,13 +29,16 @@ const poppins = Poppins({
 
 export const SignInView = () => {
   const router = useRouter();
+
   const trpc = useTRPC();
+  const queryClinet = useQueryClient();
   const login = useMutation(
     trpc.auth.login.mutationOptions({
       onError: (error) => {
         toast.error(error.message);
       },
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClinet.invalidateQueries(trpc.auth.session.queryFilter());
         router.push("/");
       },
     })
