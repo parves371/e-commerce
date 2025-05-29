@@ -10,7 +10,7 @@ import CategoriesSidebar from "./categories-sidebar";
 import { CategoryDropdown } from "./category-dropdown";
 
 interface Props {
-  data: CategoriesGetManyOutput
+  data: CategoriesGetManyOutput;
 }
 export const Categories = ({ data }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +58,11 @@ export const Categories = ({ data }: Props) => {
     <div className="relative w-full">
       {/* category Sidebar */}
 
-      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
+      <CategoriesSidebar
+        open={isSidebarOpen}
+        onOpenChange={setIsSidebarOpen}
+        data={data}
+      />
 
       {/* hidden div for measuring the width of the items */}
       <div
