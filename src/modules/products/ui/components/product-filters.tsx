@@ -5,6 +5,7 @@ import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import { PriceFilters } from "./price-filters";
 import { useProductsFilters } from "../../hooks/use-products-filters";
+import { TagsFilters } from "./tag-filters";
 
 interface ProductsFilterProps {
   title: string;
@@ -35,6 +36,28 @@ const ProductsFilter = ({
 export const ProductsFilters = () => {
   const [filters, setFilters] = useProductsFilters();
 
+  const hasAnyFilters = Object.entries(filters).some(([key, value]) => {
+    if (key === "sort") {
+      return false;
+    }
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    if (typeof value === "string") {
+      return value !== "";
+    }
+    return value !== null;
+  });
+
+  const onClear = () => {
+    setFilters({
+      maxPrice: "",
+      minPrice: "",
+      tags: [],
+    });
+  };
+
   const onChange = (key: keyof typeof filters, value: unknown) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -43,9 +66,14 @@ export const ProductsFilters = () => {
     <div className="border rounded-md bg-white">
       <div className="p-4 border-b flex items-center justify-between">
         <p className="font-medium">Filters</p>
-        <button className="underline" onClick={() => {}}>
-          Clear
-        </button>
+        {hasAnyFilters && (
+          <button
+            className="underline cursor-pointer"
+            onClick={() => onClear()}
+          >
+            Clear
+          </button>
+        )}
       </div>
       <ProductsFilter title="Price">
         <PriceFilters
@@ -53,6 +81,12 @@ export const ProductsFilters = () => {
           minPrice={filters.minPrice}
           onMinPriceChange={(value) => onChange("minPrice", value)}
           onMaxPriceChange={(value) => onChange("maxPrice", value)}
+        />
+      </ProductsFilter>
+      <ProductsFilter title="tags" className="border-b-0">
+        <TagsFilters
+          value={filters.tags}
+          onChange={(value) => onChange("tags", value)}
         />
       </ProductsFilter>
     </div>
