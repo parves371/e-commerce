@@ -18,7 +18,7 @@ export const BreadcrumbNavigation = ({
   activeCategoryName,
   activeSubCategoryName,
 }: Props) => {
-  if (!activeCategory || activeCategory == "photography") return null;
+  if (!activeCategory || activeCategory == "all") return null;
 
   return (
     <Breadcrumb>

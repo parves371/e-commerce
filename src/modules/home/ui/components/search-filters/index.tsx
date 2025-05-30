@@ -14,12 +14,12 @@ export const SearchFilters = () => {
 
   const params = useParams();
   const categoryParam = params.category as string | undefined;
-  const activeCategory = categoryParam || "photography";
+  const activeCategory = categoryParam || "all";
 
   const activeCategoryData = data.find((cat) => cat.slug === activeCategory);
 
   const activeCategoryColor = activeCategoryData?.color || DEFAULT_BG_COLOR;
-  const activeCatgoryName = activeCategoryData?.name || "Photography";
+  const activeCatgoryName = activeCategoryData?.name || "all";
 
   const activeSubCategory = params.subcategory as string | undefined;
   const activeSubCategoryName =

@@ -25,7 +25,7 @@ export const Categories = ({ data }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const categoryParam = params.category as string | undefined;
-  const activeCategory = categoryParam || "photography";
+  const activeCategory = categoryParam || "all";
   const activeCategoryIndex = data.findIndex(
     (cat) => cat.slug === activeCategory
   );

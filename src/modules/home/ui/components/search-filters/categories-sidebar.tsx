@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { CoustomCategory } from "../types";
-
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import {
   Sheet,
@@ -11,6 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CoustomCategory } from "@/app/(app)/(home)/types";
 
 interface props {
   open: boolean;
@@ -19,7 +18,6 @@ interface props {
 }
 
 const CategoriesSidebar = ({ open, onOpenChange, data }: props) => {
-  console.log(data)
   const router = useRouter();
   const [parentCategory, setParentCategory] = useState<
     CoustomCategory[] | null
@@ -46,7 +44,7 @@ const CategoriesSidebar = ({ open, onOpenChange, data }: props) => {
         router.push(`/${selectedCategory.slug}/${category.slug}`);
       } else {
         // this is a root category - navigated to /category
-        if (category.slug === "photography") {
+        if (category.slug === "all") {
           router.push(`/`);
         } else {
           router.push(`/${category.slug}`);
