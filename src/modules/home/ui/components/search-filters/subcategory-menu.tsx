@@ -5,22 +5,18 @@ import Link from "next/link";
 interface Props {
   category: CategoriesGetManyOutput[1];
   isOpen: boolean;
-  position: {
-    top: number;
-    left: number;
-  };
 }
 
-export const SubCatroryMenu = ({ category, isOpen, position }: Props) => {
+export const SubCatroryMenu = ({ category, isOpen }: Props) => {
   if (!isOpen || !category.subcategories || category.subcategories.length == 0)
     return null;
   const backGroundColor = category.color || "#F5F5F5";
   return (
     <div
-      className="fixed z-100"
+      className="absolute z-100"
       style={{
-        top: position.top,
-        left: position.left,
+        top: "100%",
+        left: 0,
       }}
     >
       {/* Invisalbe bridge to maintain hover state */}

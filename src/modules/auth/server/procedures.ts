@@ -20,6 +20,7 @@ export const authRouter = createTRPCRouter({
           username: { equals: input.username },
         },
       });
+
       const existingUser = existingData?.docs?.[0];
       if (existingUser) {
         throw new TRPCError({
@@ -28,12 +29,22 @@ export const authRouter = createTRPCRouter({
         });
       }
 
+      const tenant = await ctx.db.create({
+        collection: "tenants",
+        data: {
+          name: input.username,
+          slug: input.username,
+          stripeAccountId: "test",
+        },
+      });
+
       await ctx.db.create({
         collection: "users",
         data: {
           email: input.email,
           username: input.username,
-          password: input.password, // this will be hashed by Payload
+          password: input.password, // this will be hashed by payload
+          tenants: [{ tenant: tenant.id }],
         },
       });
 
