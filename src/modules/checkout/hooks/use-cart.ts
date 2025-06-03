@@ -1,15 +1,16 @@
 import { useCartStore } from "../store/use-card-store";
 
 export const useCart = (tenantSlug: string) => {
+  const productIds = useCartStore(
+    (state) => state.getCartByTenant(tenantSlug)
+  );
+
   const {
     addProduct,
     clearAllCarts,
     clearCart,
-    getCartByTenant,
     removeProduct,
   } = useCartStore();
-
-  const productIds = getCartByTenant(tenantSlug);
 
   const toggleProduct = (productId: string) => {
     if (productIds.includes(productId)) {

@@ -43,14 +43,20 @@ export const useCartStore = create<CartState>()(
           },
         })),
       clearCart: (tenantSlug) =>
-        set((state) => ({
-          tenantsCarts: {
-            ...state.tenantsCarts,
-            [tenantSlug]: {
-              productIds: [],
+        set((state) => {
+          const existingCard = state.tenantsCarts[tenantSlug];
+          if (!existingCard) return state; // nothing to clear
+          return {
+            tenantsCarts: {
+              ...state.tenantsCarts,
+              [tenantSlug]: {
+                ...existingCard,
+                productIds: [],
+              },
             },
-          },
-        })),
+          };
+        }),
+
       clearAllCarts: () =>
         set(() => ({
           tenantsCarts: {},

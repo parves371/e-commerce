@@ -15,6 +15,7 @@ import { Tags } from "./collections/Tags";
 import { Tenants } from "./collections/Tenants";
 import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 import { Config } from "./payload-types";
+import { Orders } from "./collections/orders";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -26,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Categories, Products, Tags, Tenants],
+  collections: [Users, Media, Categories, Products, Tags, Tenants, Orders],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -46,7 +47,7 @@ export default buildConfig({
         includeDefaultField: false,
       },
       userHasAccessToAllTenants: (user) =>
-        Boolean(user?.roles?.includes("super-admin")), 
+        Boolean(user?.roles?.includes("super-admin")),
     }),
     // storage-adapter-placeholder
   ],
