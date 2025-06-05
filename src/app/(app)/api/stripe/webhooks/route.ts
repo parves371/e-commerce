@@ -46,7 +46,7 @@ export async function POST(req: Request) {
           data = event.data.object as Stripe.Checkout.Session;
 
           if (!data.metadata?.userId) {
-            throw new Error("User ID is required");
+            throw new Error("User ID is requried");
           }
 
           const user = await payload.findByID({
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
           });
 
           if (!user) {
-            throw new Error("User not found");
+            throw new Error("User  not found");
           }
 
           const expandedSession = await stripe.checkout.sessions.retrieve(
@@ -76,57 +76,28 @@ export async function POST(req: Request) {
             .data as ExpandedSessionItem[];
 
           for (const item of lineItems) {
-            console.log("Processing item:", item);
+            console.log("item", item);
 
-            // Get the product ID from metadata
-            const productId = item.price.product.metadata?.id;
-            
-            if (!productId) {
-              console.error("Product ID not found in metadata for item:", item.id);
-              continue; // Skip this item if no product ID
-            }
-
-            // Verify the product exists in your database
-            try {
-              const product = await payload.findByID({
-                collection: "products",
-                id: productId,
-              });
-
-              if (!product) {
-                console.error(`Product with ID ${productId} not found in database`);
-                continue; // Skip this item if product doesn't exist
-              }
-
-              // Create the order with the correct product relationship
-              await payload.create({
-                collection: "orders",
-                data: {
-                  stripeCheckoutSessionId: data.id,
-                  user: user.id,
-                  products: productId, // This should now work as a relationship
-                  name: item.price.product.name,
-                },
-              });
-
-              console.log(`Order created successfully for product: ${productId}`);
-            } catch (productError) {
-              console.error(`Error processing product ${productId}:`, productError);
-              // Continue with other items even if one fails
-              continue;
-            }
+            await payload.create({
+              collection: "orders",
+              data: {
+                stripeCheckoutSessionId: data.id,
+                user: user.id,
+                product: item.price.product.metadata.id,
+                name: item.price.product.name,
+              },
+            });
           }
           break;
         default:
           throw new Error(`Unhandled event type: ${event.type}`);
       }
     } catch (error) {
-      console.error("Webhook handler error:", error);
+      console.log(error);
 
       return NextResponse.json(
         {
-          message: "Webhook handler failed",
-          error: error instanceof Error ? error.message : "Unknown error",
+          message: "webhook handler Faild",
         },
         {
           status: 500,
@@ -135,5 +106,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ message: "Received" }, { status: 200 });
+  return NextResponse.json({ message: "Recived" }, { status: 200 });
 }

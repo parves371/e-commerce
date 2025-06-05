@@ -1,17 +1,16 @@
 "use client";
 
+import { generateTenantUrl } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useCart } from "../../hooks/use-cart";
+import { InboxIcon, Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { generateTenantUrl } from "@/lib/utils";
+import { useCart } from "../../hooks/use-cart";
+import { useCheckoutStates } from "../../hooks/use-checkout-stats";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
-import { InboxIcon, Loader2Icon } from "lucide-react";
-import { useCheckoutStates } from "../../hooks/use-checkout-stats";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 export const CheckoutView = ({ tenantSlug }: { tenantSlug: string }) => {
   const { productIds, removeProduct, clearCart } = useCart(tenantSlug);
@@ -47,7 +46,6 @@ export const CheckoutView = ({ tenantSlug }: { tenantSlug: string }) => {
   );
   useEffect(() => {
     if (states.success) {
-      console.log({ states: states.success });
       clearCart();
       setStates({
         cancel: false,
@@ -120,8 +118,6 @@ export const CheckoutView = ({ tenantSlug }: { tenantSlug: string }) => {
             disabled={purchase.isPending}
           />
         </div>
-
-        <Button onClick={() => clearCart()}>hi</Button>
       </div>
     </div>
   );

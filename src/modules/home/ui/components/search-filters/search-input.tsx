@@ -4,14 +4,14 @@ import { Input } from "@/components/ui/input";
 import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import CategoriesSidebar from "./categories-sidebar";
-import { CoustomCategory } from "../types";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 interface SearchInputProps {
   disabled?: boolean;
-  data: CoustomCategory[];
+  data: CategoriesGetManyOutput;
 }
 export const SearchInput = ({ disabled, data }: SearchInputProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,7 +40,9 @@ export const SearchInput = ({ disabled, data }: SearchInputProps) => {
       {session.data?.user && (
         <Button variant={"eleveted"}>
           <BookmarkCheckIcon className="mr-2" />
-          <Link href={"/library"}>library</Link>
+          <Link prefetch href={"/library"}>
+            library
+          </Link>
         </Button>
       )}
       {/* TOTO: ADD Libary Button */}

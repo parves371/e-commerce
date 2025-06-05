@@ -18,7 +18,11 @@ const CartButton = dynamic(
   () => import("../components/cart-button").then((mod) => mod.CartButton),
   {
     ssr: false,
-    loading: () => <Button disabled className="flex-1 bg-pink-400">Add to cart</Button>,
+    loading: () => (
+      <Button disabled className="flex-1 bg-pink-400">
+        Add to cart
+      </Button>
+    ),
   }
 );
 
@@ -104,7 +108,12 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className="border-t lg:border-t-0 lg:border-l h-full">
               <div className="flex flex-col gap-4 p-6 border-b">
                 <div className="flex flex-row items-center gap-2">
-                  <CartButton productId={productId} tenantSlug={tenantSlug} />
+                  <CartButton
+                    isPurChased={data.isPurchased}
+                    productId={productId}
+                    tenantSlug={tenantSlug}
+                  />
+
                   <Button
                     variant={"eleveted"}
                     className="size-12"
