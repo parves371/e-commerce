@@ -3,7 +3,7 @@ import type { CollectionConfig } from "payload";
 export const Orders: CollectionConfig = {
   slug: "orders",
   admin: {
-    useAsTitle: "title",
+    useAsTitle: "name",
   },
 
   fields: [
@@ -32,5 +32,4 @@ export const Orders: CollectionConfig = {
       required: true,
     },
   ],
-  upload: true,
 };

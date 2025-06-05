@@ -15,7 +15,7 @@ import { Tags } from "./collections/Tags";
 import { Tenants } from "./collections/Tenants";
 import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 import { Config } from "./payload-types";
-import { Orders } from "./collections/orders";
+import { Orders } from "./collections/Orders";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
