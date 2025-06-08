@@ -49,8 +49,8 @@ export const ProductsList = () => {
               imgeUrl={product.image?.url || "/placeholder.webp"}
               tenantSlug={product.tenant?.slug}
               tenantImageUrl={product.tenant.image?.url}
-              reviewCount={3}
-              reviewRating={4.5}
+              reviewCount={product.reviewsCount}
+              reviewRating={product.reviewRatig}
             />
           ))}
       </div>

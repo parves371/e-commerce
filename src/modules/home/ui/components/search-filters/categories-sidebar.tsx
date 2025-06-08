@@ -14,7 +14,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 interface props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: CategoriesGetManyOutput; //TODO: removed latter
+  data: CategoriesGetManyOutput;
 }
 
 const CategoriesSidebar = ({ open, onOpenChange, data }: props) => {
