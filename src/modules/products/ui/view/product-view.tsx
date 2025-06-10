@@ -30,6 +30,23 @@ interface ProductViewProps {
   tenantSlug: string;
 }
 
+export const ProductViewSkeleton = () => {
+  return (
+    <div className="px-4 lg:px-12 py-10">
+      <div className="border rounded-sm bg-white overflow-hidden">
+        <div className="relative aspect-[3.9] border-b">
+          <Image
+            src={"/placeholder.webp"}
+            alt={"Product Image"}
+            fill
+            className="object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(

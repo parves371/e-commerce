@@ -33,7 +33,7 @@ export const Tenants: CollectionConfig = {
       },
       access: {
         update: ({ req }) => isSuperAdmin(req.user),
-      }
+      },
     },
     {
       name: "image",
@@ -48,7 +48,6 @@ export const Tenants: CollectionConfig = {
         update: ({ req }) => isSuperAdmin(req.user),
       },
       admin: {
-        readOnly: true,
         description: "Stripe  account Id associated with the store",
       },
     },

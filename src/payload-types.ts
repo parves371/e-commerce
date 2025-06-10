@@ -240,6 +240,14 @@ export interface Product {
    * protected content only visible to customers after purchase. add product documentation, downloadable files, getting started guides, and bonus materials, supports Markdown formating
    */
   content?: string | null;
+  /**
+   * if checked, this product will not be shown on the public storefront
+   */
+  isPrivate?: boolean | null;
+  /**
+   * Archive product to hide from customers
+   */
+  isArchived?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -436,6 +444,8 @@ export interface ProductsSelect<T extends boolean = true> {
   image?: T;
   refundPolicy?: T;
   content?: T;
+  isPrivate?: T;
+  isArchived?: T;
   updatedAt?: T;
   createdAt?: T;
 }
