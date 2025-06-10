@@ -9,6 +9,7 @@ const page = async () => {
     redirect("/");
   }
 
+
   return <SignInView />;
 };
 

@@ -15,6 +15,7 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: "name",
+    description:"you must veryfy your account before creating products"
   },
 
   fields: [

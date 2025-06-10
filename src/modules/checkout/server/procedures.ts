@@ -10,7 +10,52 @@ import { z } from "zod";
 import type Stripe from "stripe";
 import { CheckoutMetadata, ProductMetadata } from "../types";
 import { stripe } from "@/lib/stripe";
+import { PLATHFORM_FEE_AMOUNT } from "@/constants";
 export const checkoutRouter = createTRPCRouter({
+  veryfy: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.findByID({
+      collection: "users",
+      id: ctx.session.user.id,
+      depth: 0, //user.tenents is going to be a string (tenant Id)
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const tenantId = user.tenants?.[0]?.tenant as string; // this going to be a string because of depth 0
+    const tenant = await ctx.db.findByID({
+      collection: "tenants",
+      id: tenantId,
+      depth: 2,
+    });
+    if (!tenant) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Tenant not found",
+      });
+    }
+
+    const accountLink = await stripe.accountLinks.create({
+      account: tenant.stripeAccountId,
+      refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin`,
+      type: "account_onboarding",
+    });
+    if (!accountLink.url) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Failed to create account link",
+      });
+    }
+
+    return {
+      url: accountLink.url,
+    };
+  }),
+
   purchase: protectedProcedure
     .input(
       z.object({
@@ -63,6 +108,13 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
+      if (!tenant.stripeDetailsSubmitted) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tenant not allowed to sell products",
+        });
+      }
+
       // TODO: trow error if stripe not configured
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => ({
@@ -82,19 +134,34 @@ export const checkoutRouter = createTRPCRouter({
           },
         }));
 
-      const checkout = await stripe.checkout.sessions.create({
-        customer_email: ctx.session.user.email,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
-        mode: "payment",
-        line_items: lineItems,
-        invoice_creation: {
-          enabled: true,
+      const totalAmount = products.docs.reduce((acc, product) => {
+        return acc + product.price * 100;
+      }, 0);
+      const plathformFeeAmount = Math.round(
+        (totalAmount * PLATHFORM_FEE_AMOUNT) / 100
+      );
+
+      const checkout = await stripe.checkout.sessions.create(
+        {
+          customer_email: ctx.session.user.email,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
+          mode: "payment",
+          line_items: lineItems,
+          invoice_creation: {
+            enabled: true,
+          },
+          metadata: {
+            userId: ctx.session.user.id,
+          } as CheckoutMetadata,
+          payment_intent_data: {
+            application_fee_amount: plathformFeeAmount,
+          },
         },
-        metadata: {
-          userId: ctx.session.user.id,
-        } as CheckoutMetadata,
-      });
+        {
+          stripeAccount: tenant.stripeAccountId,
+        }
+      );
 
       if (!checkout.url) {
         throw new TRPCError({

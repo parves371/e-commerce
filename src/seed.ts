@@ -1,7 +1,12 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
+import { stripe } from "./lib/stripe";
 
 const categories = [
+  {
+    name: "all",
+    slug: "all",
+  },
   {
     name: "Cars & Vehicles",
     color: "#FF6F61",
@@ -146,7 +151,16 @@ const categories = [
 const seed = async () => {
   const payload = await getPayload({ config });
 
-  // create admin user'
+  const adminAccount = await stripe.accounts.create({});
+
+  const tenant = await payload.create({
+    collection: "tenants",
+    data: {
+      name: "admin",
+      slug: "admin",
+      stripeAccountId: adminAccount.id,
+    },
+  });
 
   await payload.create({
     collection: "users",
@@ -155,6 +169,11 @@ const seed = async () => {
       password: "admin",
       roles: ["super-admin"],
       username: "admin",
+      tenants: [
+        {
+          tenant: tenant.id,
+        },
+      ],
     },
   });
 
