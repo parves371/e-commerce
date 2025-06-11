@@ -1,9 +1,7 @@
 import { CheckoutView } from "@/modules/checkout/ui/views/checkout-view";
 
 interface Props {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
 const page = async ({ params }: Props) => {
