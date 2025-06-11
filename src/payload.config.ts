@@ -17,7 +17,7 @@ import { Tenants } from "./collections/Tenants";
 import { Users } from "./collections/Users";
 import { isSuperAdmin } from "./lib/access";
 import { Config } from "./payload-types";
-import { Orders } from "./collections/Orders";
+import { Orders } from "./collections/bug/Orders";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
