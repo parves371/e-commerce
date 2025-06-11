@@ -10,7 +10,6 @@ import { fileURLToPath } from "url";
 import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 import { Categories } from "./collections/Categories";
 import { Media } from "./collections/Media";
-import { Orders } from "./collections/Orders";
 import { Products } from "./collections/Product";
 import { Reviews } from "./collections/Reviews";
 import { Tags } from "./collections/Tags";
@@ -18,6 +17,7 @@ import { Tenants } from "./collections/Tenants";
 import { Users } from "./collections/Users";
 import { isSuperAdmin } from "./lib/access";
 import { Config } from "./payload-types";
+import { Orders } from "./collections/Orders";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
