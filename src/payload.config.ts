@@ -4,20 +4,20 @@ import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload";
-import { fileURLToPath } from "url";
 import sharp from "sharp";
+import { fileURLToPath } from "url";
 
-import { Users } from "./collections/Users";
-import { Media } from "./collections/Media";
+import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 import { Categories } from "./collections/Categories";
+import { Media } from "./collections/Media";
+import { Orders } from "./collections/Orders";
 import { Products } from "./collections/Product";
+import { Reviews } from "./collections/Reviews";
 import { Tags } from "./collections/Tags";
 import { Tenants } from "./collections/Tenants";
-import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
-import { Config } from "./payload-types";
-import { Orders } from "./collections/Orders";
-import { Reviews } from "./collections/Reviews";
+import { Users } from "./collections/Users";
 import { isSuperAdmin } from "./lib/access";
+import { Config } from "./payload-types";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

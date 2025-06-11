@@ -13,7 +13,7 @@ const page = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <LibaryView />;
+      <LibaryView />
     </HydrationBoundary>
   );
 };
