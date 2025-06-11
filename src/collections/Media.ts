@@ -8,7 +8,7 @@ export const Media: CollectionConfig = {
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   admin: {
-    useAsTitle: "filename",
+    useAsTitle: "alt",
     hidden: ({ user }) => !isSuperAdmin(user),
   },
   fields: [
