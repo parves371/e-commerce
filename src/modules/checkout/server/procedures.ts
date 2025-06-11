@@ -11,6 +11,7 @@ import type Stripe from "stripe";
 import { CheckoutMetadata, ProductMetadata } from "../types";
 import { stripe } from "@/lib/stripe";
 import { PLATHFORM_FEE_AMOUNT } from "@/constants";
+import { generateTenantUrl } from "@/lib/utils";
 export const checkoutRouter = createTRPCRouter({
   veryfy: protectedProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.db.findByID({
@@ -146,11 +147,13 @@ export const checkoutRouter = createTRPCRouter({
         (totalAmount * PLATHFORM_FEE_AMOUNT) / 100
       );
 
+      const domain = generateTenantUrl(input.tenantSlug);
+
       const checkout = await stripe.checkout.sessions.create(
         {
           customer_email: ctx.session.user.email,
-          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
-          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
+          success_url: `${domain}/checkout?success=true`,
+          cancel_url: `${domain}/checkout?cancel=true`,
           mode: "payment",
           line_items: lineItems,
           invoice_creation: {
