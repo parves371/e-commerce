@@ -121,6 +121,13 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
+      if (!tenant.stripeAccountId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Stripe account not configured for tenant",
+        });
+      }
+
       // TODO: trow error if stripe not configured
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => ({

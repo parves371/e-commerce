@@ -6,21 +6,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantUrl(tenantSlug: string) {
-  const isDevolepment = process.env.NODE_ENV === "development";
+  const isDevelopment = process.env.NODE_ENV === "development";
   const isSubdomainRoutingEnabled =
-    process.env.NEXT_PUBLIC_EANBLE_SUBDOMAIN_ROUTING! === "true";
+    process.env.NEXT_PUBLIC_EANBLE_SUBDOMAIN_ROUTING === "true";
 
-  // in development use normal routing or if subdomain routing is disabled, use normal routing
-  if (isDevolepment || !isSubdomainRoutingEnabled) {
-    return `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${tenantSlug}`;
+  if (isDevelopment || !isSubdomainRoutingEnabled) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!appUrl) {
+      throw new Error("Missing NEXT_PUBLIC_APP_URL environment variable");
+    }
+    return `${appUrl}/tenants/${tenantSlug}`;
   }
 
-  const protocol = "https";
-  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
+  if (!rootDomain) {
+    throw new Error("Missing NEXT_PUBLIC_ROOT_DOMAIN environment variable");
+  }
 
-  // in production use subdomain routing
-  // https://parves.vendspace.com
-  return `${protocol}://${tenantSlug}.${domain}`;
+  return `https://${tenantSlug}.${rootDomain}`;
 }
 
 export function formateCurrency(amount: number) {
