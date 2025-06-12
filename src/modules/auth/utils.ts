@@ -12,8 +12,12 @@ export const generateAuthCookie = async ({ prefix, value }: Props) => {
     value: value,
     httpOnly: true,
     path: "/",
-    sameSite: "none",
-    domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
-    secure: process.env.NODE_ENV === "production",
+    // this enables the cookie auth on loaclhost
+    // but it will not work whit subdomains truned on
+    ...(process.env.NODE_ENV !== "development" && {
+      sameSite: "none",
+      secure: true,
+      domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+    }),
   });
 };
